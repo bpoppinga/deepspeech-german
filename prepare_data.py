@@ -24,9 +24,9 @@ import text_cleaning
 
 def clean_transcriptions(corpus):
     for utterance in corpus.utterances.values():
-        transcription = utterance.label_lists[audiomate.corpus.LL_WORD_TRANSCRIPT][0].value
+        transcription = utterance.label_lists[audiomate.corpus.LL_WORD_TRANSCRIPT].labels[0].value
         cleaned = text_cleaning.clean_sentence(transcription)
-        utterance.label_lists[audiomate.corpus.LL_WORD_TRANSCRIPT][0].value = cleaned
+        utterance.label_lists[audiomate.corpus.LL_WORD_TRANSCRIPT].labels[0].value = cleaned
 
 
 if __name__ == '__main__':
@@ -35,12 +35,14 @@ if __name__ == '__main__':
     parser.add_argument('--tuda', type=str)
     parser.add_argument('--voxforge', type=str)
     parser.add_argument('--swc', type=str)
+    parser.add_argument('--cv', type=str)
 
     args = parser.parse_args()
 
     tuda_path = args.tuda
     voxforge_path = args.voxforge
     swc_path = args.swc
+    cv_path = args.cv
 
     corpora = []
 
@@ -55,6 +57,10 @@ if __name__ == '__main__':
     if swc_path is not None:
         swc_corpus = audiomate.Corpus.load(swc_path, reader='kaldi')
         corpora.append(swc_corpus)
+    
+    if cv_path is not None:
+        cv_corpus = audiomate.Corpus.load(cv_path, reader='common-voice')
+        corpora.append(cv_corpus)
 
     if len(corpora) <= 0:
         raise ValueError('No Corpus given!')
